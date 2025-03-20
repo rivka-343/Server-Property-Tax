@@ -8,16 +8,14 @@ using PropertyTax.Data.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-//using Microsoft.AspNetCore.Identity;
 using PropertyTax.Core.Models;
-using Microsoft.AspNet.Identity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.OpenApi.Models;
+using PropertyTax.Servise;
+
 using Amazon.Runtime;
 using Microsoft.Extensions.Configuration;
-using System.Configuration;
-using Umbraco.Core.Services;
-using PropertyTax.Servise;
+
 
 namespace PropertyTax
 {
@@ -33,15 +31,19 @@ namespace PropertyTax
             })
             .AddJwtBearer(options =>
             {
-                options.TokenValidationParameters = new TokenValidationParameters
-                {
+                options.TokenValidationParameters = new TokenValidationParameters {
                     ValidateIssuer = true,
                     ValidateAudience = true,
                     ValidateLifetime = true,
                     ValidateIssuerSigningKey = true,
-                    ValidIssuer = builder.Configuration["Jwt:Issuer"],
-                    ValidAudience = builder.Configuration["Jwt:Audience"],
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
+
+
+                    ValidIssuer = Environment.GetEnvironmentVariable("JWT_ISSUER"),
+                    ValidAudience = Environment.GetEnvironmentVariable("JWT_AUDIENCE"),
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable("JWT_KEY") ?? throw new ArgumentNullException("JWT_KEY")))
+                //ValidIssuer = builder.Configuration["Jwt:Issuer"],
+                //    ValidAudience = builder.Configuration["Jwt:Audience"],
+                //    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
                 };
             });
             builder.Services.AddAuthorization(options =>
@@ -73,7 +75,9 @@ namespace PropertyTax
             //        options.UseSqlServer("mysql://uyevotthdfrhj5kk:MAA9kQJwXSvw7tRIXhMA@bv3fmicofty9tcfcxbov-mysql.services.clever-cloud.com:3306/bv3fmicofty9tcfcxbov"));
             //   var connectionString = Environment.GetEnvironmentVariable("DATABASE_URL");
             //  var connectionString = "mysql://uyevotthdfrhj5kk:MAA9kQJwXSvw7tRIXhMA@bv3fmicofty9tcfcxbov-mysql.services.clever-cloud.com:3306/bv3fmicofty9tcfcxbov";
-            var connectionString = "server=bv3fmicofty9tcfcxbov-mysql.services.clever-cloud.com;database=bv3fmicofty9tcfcxbov;user=uyevotthdfrhj5kk;password=MAA9kQJwXSvw7tRIXhMA;port=3306;";
+            var connectionString = Environment.GetEnvironmentVariable("DATABASE_URL") ?? throw new Exception("Missing DATABASE_URL in environment variables.");
+
+            // var connectionString = "server=bv3fmicofty9tcfcxbov-mysql.services.clever-cloud.com;database=bv3fmicofty9tcfcxbov;user=uyevotthdfrhj5kk;password=MAA9kQJwXSvw7tRIXhMA;port=3306;";
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
             builder.Services.AddAutoMapper(typeof(Mapping));
@@ -112,15 +116,19 @@ namespace PropertyTax
             builder.Services.AddCors(options =>
             {
                 options.AddPolicy("AllowAll",
-                  builder => builder.WithOrigins("http://localhost:5173") // מקור ה-React שלך
+                  builder => builder.WithOrigins("http://localhost:5173", "https://server-property-tax.onrender.com") // מקור ה-React שלך
                           .AllowAnyMethod()
                     .AllowAnyHeader());
             });
             builder.Services.AddEndpointsApiExplorer();
             var app = builder.Build();
             app.UseCors();
-            if (app.Environment.IsDevelopment())
-            {
+            //if (app.Environment.IsDevelopment())
+            //{
+            //    app.UseSwagger();
+            //    app.UseSwaggerUI();
+            //}
+            if (app.Environment.IsDevelopment() || Environment.GetEnvironmentVariable("ENABLE_SWAGGER") == "true") {
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }

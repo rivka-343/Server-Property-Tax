@@ -20,14 +20,18 @@ namespace PropertyTax.Servise
 
             public S3Service(IConfiguration configuration) // namespace מלא
             {
+            //var awsOptions = configuration.GetSection("AWS");
+            //var accessKey = awsOptions["AccessKey"];
+            //var secretKey = awsOptions["SecretKey"];
+            //var region = awsOptions["Region"];
+            //_bucketName = awsOptions["BucketName"];
             var awsOptions = configuration.GetSection("AWS");
-            var accessKey = awsOptions["AccessKey"];
-            var secretKey = awsOptions["SecretKey"];
-            var region = awsOptions["Region"];
-            _bucketName = awsOptions["BucketName"];
-
+            var accessKey = Environment.GetEnvironmentVariable("AWS_ACCESS_KEY");
+            var secretKey = Environment.GetEnvironmentVariable("AWS_SECRET_KEY");
+            var region = Environment.GetEnvironmentVariable("AWS_REGION");
+            _bucketName = Environment.GetEnvironmentVariable("AWS_BUCKET_NAME");
             _s3Client = new AmazonS3Client(accessKey, secretKey, Amazon.RegionEndpoint.GetBySystemName(region));
-        }
+            }
 
          
 

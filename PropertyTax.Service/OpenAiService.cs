@@ -20,7 +20,9 @@ namespace PropertyTax.Servise
         public OpenAiService(HttpClient httpClient, IConfiguration configuration)
         {
             _httpClient = httpClient;
-            _apiKey = configuration["OpenAI:ApiKey"];
+            
+          //  _apiKey = configuration["OpenAI:ApiKey"];
+            _apiKey = Environment.GetEnvironmentVariable("OPENAI_API_KEY");
         }
 
         public async Task<string> GetChatResponse(string userMessage)
