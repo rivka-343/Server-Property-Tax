@@ -33,4 +33,4 @@ RUN dotnet publish ./PropertyTax/PropertyTax.csproj -c Release -o /app/out
 FROM mcr.microsoft.com/dotnet/aspnet:7.0 AS runtime
 WORKDIR /app
 COPY --from=build /app/out ./
-ENTRYPOINT ["dotnet", "PropertyTax/PropertyTax.dll"]
+ENTRYPOINT ["dotnet", "PropertyTax.dll"]
