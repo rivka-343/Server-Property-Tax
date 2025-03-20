@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "PropertyTax.Data": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "CONNECTION_STRING": "server=bv3fmicofty9tcfcxbov-mysql.services.clever-cloud.com;database=bv3fmicofty9tcfcxbov;user=uyevotthdfrhj5kk;password=MAA9kQJwXSvw7tRIXhMA;port=3306;"
+      }
+    }
+  }
+}
