@@ -41,7 +41,7 @@ namespace PropertyTax.Servise
 
             var claims = new List<Claim>{
             new Claim(ClaimTypes.Name, username),
-            new Claim("id", userId.ToString()) // הוספת ה-ID של המשתמש כ-Claim
+            new Claim(ClaimTypes.NameIdentifier, userId.ToString()) // הוספת ה-ID של המשתמש כ-Claim
             };
 
             // הוספת תפקידים כ-Claims
