@@ -19,5 +19,6 @@ namespace PropertyTax.Core.Services
         Task UpdateArnonaCalculationAsync(int requestId, CalculateArnonaDto updateArnonaCalculationDto);
         Task AddDocumentsToRequestAsync(int requestId, List<Doc> docs);
         Task<int> CreateRequestWithDocumentsAsync(RequestCreateDto requestCreateDto, int userId);
+        Task<Request?> GetUserLatestRequestAsync(string userId);
     }
 }

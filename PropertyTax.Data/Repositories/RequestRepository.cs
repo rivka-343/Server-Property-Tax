@@ -24,6 +24,15 @@ namespace PropertyTax.Data.Repositories
             await _dbContext.SaveChangesAsync();
             return request;
         }
+
+        public async Task<Request?> GetLatestRequestByUserIdAsync(string userId)
+        {
+            return await _dbContext.Requests
+        .Where(r => r.UserId.ToString().Equals(userId))
+       // .OrderByDescending(r => r.CreatedAt)
+        .FirstOrDefaultAsync();
+        }
+
         public async Task<Request> GetRequestByIdAsync(int id)
         {
             return await _dbContext.Requests.FindAsync(id);

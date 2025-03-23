@@ -54,16 +54,28 @@ namespace PropertyTax.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetRequest(int id)
         {
-            var request = await _requestService.GetRequestByIdAsync(id); // נניח שיש לך פונקציה כזו ב-IRequestService
+            var request = await _requestService.GetRequestByIdAsync(id);
 
             if (request == null)
             {
-                return NotFound(); // החזר 404 אם הבקשה לא נמצאה
+                return NotFound(); 
             }
 
-            return Ok(request); // החזר 200 עם הבקשה
+            return Ok(request); 
         }
-    
+
+        [HttpGet("my-request")]
+        [Authorize(Policy = "ResidentOnly")]
+
+        public async Task<IActionResult> GetUserRequest() {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(userId))
+                return Unauthorized();
+            var request = await _requestService.GetUserLatestRequestAsync(userId);
+
+            return request != null ? Ok(request) : NotFound();
+        }
+
         [HttpGet("{id}/status")]
         public async Task<IActionResult> GetApplicationStatus(int id)
         {

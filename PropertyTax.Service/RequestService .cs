@@ -131,7 +131,9 @@ namespace PropertyTax.Servise
             return createdRequest.Id;
         }
 
-
-
+        public async Task<Request?> GetUserLatestRequestAsync(string userId)
+        {
+            return await _requestRepository.GetLatestRequestByUserIdAsync(userId);
+        }
     }
 }

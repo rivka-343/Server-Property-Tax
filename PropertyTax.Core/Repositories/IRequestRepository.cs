@@ -11,6 +11,7 @@ namespace PropertyTax.Core.Repositories
     public interface IRequestRepository
     {
         Task<Request> CreateRequestAsync(Request request);
+        Task<Request?> GetLatestRequestByUserIdAsync(string userId);
         Task<Request> GetRequestByIdAsync(int id);
         Task UpdateRequestAsync(Request request);
 
