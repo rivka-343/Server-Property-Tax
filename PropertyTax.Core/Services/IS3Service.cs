@@ -10,7 +10,7 @@ namespace PropertyTax.Core.Services
     public interface IS3Service
     {
  
-        Task<string> GeneratePresignedUrlAsync(string fileName, string contentType);
+        Task<string> GeneratePresignedUrlAsync(string fileName, string contentType, string userId);
         Task<string> GetDownloadUrlAsync(string fileName);
     }
 }

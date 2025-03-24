@@ -13,13 +13,13 @@ using System.IO;
 using Amazon.S3.Model;
 namespace PropertyTax.Servise
 {
-        public class S3Service : IS3Service
-        {
-            private readonly IAmazonS3 _s3Client;
-            private readonly string _bucketName;
+    public class S3Service : IS3Service
+    {
+        private readonly IAmazonS3 _s3Client;
+        private readonly string _bucketName;
 
-            public S3Service(IConfiguration configuration) // namespace מלא
-            {
+        public S3Service(IConfiguration configuration) // namespace מלא
+        {
             //var awsOptions = configuration.GetSection("AWS");
             //var accessKey = awsOptions["AccessKey"];
             //var secretKey = awsOptions["SecretKey"];
@@ -31,24 +31,40 @@ namespace PropertyTax.Servise
             var region = Environment.GetEnvironmentVariable("AWS_REGION");
             _bucketName = Environment.GetEnvironmentVariable("AWS_BUCKET_NAME");
             _s3Client = new AmazonS3Client(accessKey, secretKey, Amazon.RegionEndpoint.GetBySystemName(region));
-            }
+        }
+        //public async Task<string> GeneratePresignedUrlAsync(string fileName, string contentType)
+        //{
+        //    var request = new GetPreSignedUrlRequest
+        //    {
+        //        BucketName = _bucketName,
+        //        Key = fileName,
+        //        Verb = HttpVerb.PUT,
+        //        Expires = DateTime.UtcNow.AddMinutes(10),
+        //        ContentType = contentType
+        //    };
+        //    var url = _s3Client.GetPreSignedURL(request);
 
-         
-
-        public async Task<string> GeneratePresignedUrlAsync(string fileName, string contentType)
+        //    return url;
+        //}
+        public async Task<string> GeneratePresignedUrlAsync(string fileName, string contentType, string userId)
         {
+            // יצירת Key עם תיקיה לכל משתמש
+            var fileKey = $"uploads/user_{userId}/{Guid.NewGuid()}_{fileName}";
+
             var request = new GetPreSignedUrlRequest
             {
                 BucketName = _bucketName,
-                Key = fileName,
+                Key = fileKey,
                 Verb = HttpVerb.PUT,
                 Expires = DateTime.UtcNow.AddMinutes(10),
                 ContentType = contentType
             };
+
             var url = _s3Client.GetPreSignedURL(request);
 
             return url;
         }
+
         public async Task<string> GetDownloadUrlAsync(string fileName)
         {
             var request = new GetPreSignedUrlRequest
