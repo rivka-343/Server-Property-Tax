@@ -36,12 +36,22 @@ namespace PropertyTax.Controllers {
         }
 
         //   שלב 1: קבלת URL להעלאת קובץ ל-S3
+        //[HttpGet("upload-url")]
+        //public async Task<IActionResult> GetUploadUrl([FromQuery] string fileName, [FromQuery] string contentType) {
+        //    Console.WriteLine("enter....");
+        //    if (string.IsNullOrEmpty(fileName))
+        //        return BadRequest("Missing file name");
+        //    var url = await _s3Service.GeneratePresignedUrlAsync(fileName, contentType);
+        //    return Ok(new { url });
+        //}
         [HttpGet("upload-url")]
-        public async Task<IActionResult> GetUploadUrl([FromQuery] string fileName, [FromQuery] string contentType) {
-            Console.WriteLine("enter....");
-            if (string.IsNullOrEmpty(fileName))
-                return BadRequest("Missing file name");
-            var url = await _s3Service.GeneratePresignedUrlAsync(fileName, contentType);
+        public async Task<IActionResult> GetUploadUrl([FromQuery] string fileName, [FromQuery] string contentType, [FromQuery] string userId) {
+            Console.WriteLine("Generating upload URL...");
+
+            if (string.IsNullOrEmpty(fileName) || string.IsNullOrEmpty(userId))
+                return BadRequest("Missing file name or user ID");
+
+            var url = await _s3Service.GeneratePresignedUrlAsync(fileName, contentType, userId);
             return Ok(new { url });
         }
 
