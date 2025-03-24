@@ -1,4 +1,6 @@
-﻿using PropertyTax.Core.Models;
+﻿using Amazon.S3.Model;
+using Amazon.S3;
+using PropertyTax.Core.Models;
 using PropertyTax.Core.Repositories;
 using PropertyTax.Core.Services;
 using System;
@@ -23,6 +25,6 @@ namespace PropertyTax.Service
             return await _documentRepository.GetDocumentsByRequestIdAsync(requestId);
         }
 
-
+    
     }
 }

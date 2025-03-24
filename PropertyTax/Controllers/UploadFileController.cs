@@ -9,6 +9,29 @@ namespace PropertyTax.Controllers {
     [Route("api/[controller]")]
     public class UploadFileController : Controller {
 
+        private readonly IS3Service _s3Service;
+        public UploadFileController(IS3Service s3Server) {
+            _s3Service = s3Server;
+        }
+
+        [HttpGet("upload-url")]
+        public async Task<IActionResult> GetUploadUrl([FromQuery] string fileName, [FromQuery] string contentType, [FromQuery] string userId) {
+            Console.WriteLine("Generating upload URL...");
+
+            if (string.IsNullOrEmpty(fileName) || string.IsNullOrEmpty(userId))
+                return BadRequest("Missing file name or user ID");
+
+            var url = await _s3Service.GeneratePresignedUrlAsync(fileName, contentType, userId);
+            return Ok(new { url });
+        }
+
+        //   שלב 2: קבלת URL להורדת קובץ מה-S3
+        [HttpGet("download-url/{fileName}")]
+        public async Task<IActionResult> GetDownloadUrl(string fileName) {
+            var url = await _s3Service.GetDownloadUrlAsync(fileName);
+            return Ok(new { downloadUrl = url });
+        }
+
         //private readonly IAmazonS3 _s3Client;
 
         //public UploadFileController(IAmazonS3 s3Client) {
@@ -28,13 +51,6 @@ namespace PropertyTax.Controllers {
         //    string url = _s3Client.GetPreSignedURL(request);
         //    return Ok(new { url });
         //}
-        private readonly IS3Service _s3Service;
-
-
-        public UploadFileController(IS3Service s3Server) {
-            _s3Service = s3Server;
-        }
-
         //   שלב 1: קבלת URL להעלאת קובץ ל-S3
         //[HttpGet("upload-url")]
         //public async Task<IActionResult> GetUploadUrl([FromQuery] string fileName, [FromQuery] string contentType) {
@@ -44,24 +60,6 @@ namespace PropertyTax.Controllers {
         //    var url = await _s3Service.GeneratePresignedUrlAsync(fileName, contentType);
         //    return Ok(new { url });
         //}
-        [HttpGet("upload-url")]
-        public async Task<IActionResult> GetUploadUrl([FromQuery] string fileName, [FromQuery] string contentType, [FromQuery] string userId) {
-            Console.WriteLine("Generating upload URL...");
 
-            if (string.IsNullOrEmpty(fileName) || string.IsNullOrEmpty(userId))
-                return BadRequest("Missing file name or user ID");
-
-            var url = await _s3Service.GeneratePresignedUrlAsync(fileName, contentType, userId);
-            return Ok(new { url });
-        }
-
-        //   שלב 2: קבלת URL להורדת קובץ מה-S3
-        [HttpGet("download-url/{fileName}")]
-        public async Task<IActionResult> GetDownloadUrl(string fileName) {
-            var url = await _s3Service.GetDownloadUrlAsync(fileName);
-            return Ok(new { downloadUrl = url });
-        }
-
-       
     }
 }

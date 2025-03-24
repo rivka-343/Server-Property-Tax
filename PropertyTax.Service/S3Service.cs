@@ -32,20 +32,6 @@ namespace PropertyTax.Servise
             _bucketName = Environment.GetEnvironmentVariable("AWS_BUCKET_NAME");
             _s3Client = new AmazonS3Client(accessKey, secretKey, Amazon.RegionEndpoint.GetBySystemName(region));
         }
-        //public async Task<string> GeneratePresignedUrlAsync(string fileName, string contentType)
-        //{
-        //    var request = new GetPreSignedUrlRequest
-        //    {
-        //        BucketName = _bucketName,
-        //        Key = fileName,
-        //        Verb = HttpVerb.PUT,
-        //        Expires = DateTime.UtcNow.AddMinutes(10),
-        //        ContentType = contentType
-        //    };
-        //    var url = _s3Client.GetPreSignedURL(request);
-
-        //    return url;
-        //}
         public async Task<string> GeneratePresignedUrlAsync(string fileName, string contentType, string userId)
         {
             // יצירת Key עם תיקיה לכל משתמש
@@ -76,9 +62,40 @@ namespace PropertyTax.Servise
             };
             return _s3Client.GetPreSignedURL(request);
         }
-    }
 
+        public async Task<List<string>> GetUserFilesAsync(string userId)
+        {
+            var request = new ListObjectsV2Request
+            {
+                BucketName = _bucketName,
+                Prefix = $"uploads/user_{userId}/"  // תיקיית המשתמש לפי ID
+            };
+
+            var response = await _s3Client.ListObjectsV2Async(request);
+
+            // אם יש קבצים בתיקיה של המשתמש, מחזירים את שמותיהם
+            var fileUrls = response.S3Objects.Select(obj => $"https://{_bucketName}.s3.amazonaws.com/{obj.Key}").ToList();
+
+            return fileUrls;
+        }
+
+    }
 }
+
+        //public async Task<string> GeneratePresignedUrlAsync(string fileName, string contentType)
+        //{
+        //    var request = new GetPreSignedUrlRequest
+        //    {
+        //        BucketName = _bucketName,
+        //        Key = fileName,
+        //        Verb = HttpVerb.PUT,
+        //        Expires = DateTime.UtcNow.AddMinutes(10),
+        //        ContentType = contentType
+        //    };
+        //    var url = _s3Client.GetPreSignedURL(request);
+
+        //    return url;
+        //}
 //public async Task<string> UploadFileAsync(IFormFile file)
 //{
 //    using (var memoryStream = new MemoryStream())

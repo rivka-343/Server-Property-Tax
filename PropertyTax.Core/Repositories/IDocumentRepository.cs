@@ -11,5 +11,7 @@ namespace PropertyTax.Core.Repositories
     {
         Task<Doc> CreateDocumentsAsync(Doc doc);
         Task<List<Doc>> GetDocumentsByRequestIdAsync(int requestId);
+
+
     }
 }
