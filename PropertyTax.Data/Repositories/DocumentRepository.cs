@@ -1,4 +1,5 @@
-﻿    using PropertyTax.Core.Models;
+﻿using Microsoft.EntityFrameworkCore;
+using PropertyTax.Core.Models;
 using PropertyTax.Core.Repositories;
 using System;
 using System.Collections.Generic;
@@ -25,6 +26,10 @@ namespace PropertyTax.Data.Repositories
             await _dbContext.SaveChangesAsync();
             return doc;
         }
-    }
 
+        public async Task<List<Doc>> GetDocumentsByRequestIdAsync(int requestId)
+        {
+              return await _dbContext.Documents.Where(doc => doc.RequestId == requestId).ToListAsync();
+        }
+    }
 }

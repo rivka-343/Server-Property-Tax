@@ -15,6 +15,7 @@ namespace PropertyTax.Controllers
     [Route("api/[controller]")]
     public class RequestsController : ControllerBase
     {
+        
         private readonly IRequestService _requestService;
         private readonly IMapper _mapper;
         private readonly IOpenAiService _openAiService;

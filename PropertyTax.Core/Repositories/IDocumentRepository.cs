@@ -10,5 +10,6 @@ namespace PropertyTax.Core.Repositories
     public interface IDocumentRepository
     {
         Task<Doc> CreateDocumentsAsync(Doc doc);
+        Task<List<Doc>> GetDocumentsByRequestIdAsync(int requestId);
     }
 }

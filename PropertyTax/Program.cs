@@ -15,7 +15,8 @@ using PropertyTax.Servise;
 
 using Amazon.Runtime;
 using Microsoft.Extensions.Configuration;
-
+using Umbraco.Core.Services;
+using PropertyTax.Service;
 
 namespace PropertyTax
 {
@@ -62,6 +63,8 @@ namespace PropertyTax
             builder.Services.AddScoped<IS3Service, S3Service>();
             builder.Services.AddScoped<IUsersService, UsersService>();
             builder.Services.AddScoped<IOpenAiService, OpenAiService>();
+            builder.Services.AddScoped<IDocumentService, DocumentService>();
+
             builder.Services.AddHttpClient<OpenAiService>();
 
             builder.Services.AddScoped<IRequestRepository, RequestRepository>();
