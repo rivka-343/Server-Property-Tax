@@ -64,8 +64,9 @@ namespace PropertyTax.Controllers
 
             return Ok(request); 
         }
-
         [HttpGet]
+        [Authorize(Policy = "EmployeeOrManager")]
+
         public async Task<IActionResult> GetRequest() {
             var request = await _requestService.GetRequestsAsync();
 
@@ -84,7 +85,6 @@ namespace PropertyTax.Controllers
             if (string.IsNullOrEmpty(userId))
                 return Unauthorized();
             var request = await _requestService.GetUserLatestRequestAsync(userId);
-
             return request != null ? Ok(request) : NotFound();
         }
 
