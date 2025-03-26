@@ -65,6 +65,17 @@ namespace PropertyTax.Controllers
             return Ok(request); 
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetRequest() {
+            var request = await _requestService.GetRequestsAsync();
+
+            if (request == null) {
+                return NotFound();
+            }
+
+            return Ok(request);
+        }
+
         [HttpGet("my-request")]
         [Authorize(Policy = "ResidentOnly")]
 

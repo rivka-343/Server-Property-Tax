@@ -13,6 +13,7 @@ namespace PropertyTax.Core.Repositories
         Task<Request> CreateRequestAsync(Request request);
         Task<Request?> GetLatestRequestByUserIdAsync(string userId);
         Task<Request> GetRequestByIdAsync(int id);
+        Task<IEnumerable<Request>> GetRequestsAsync();
         Task UpdateRequestAsync(Request request);
 
 
