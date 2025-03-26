@@ -37,7 +37,11 @@ namespace PropertyTax.Data.Repositories
         {
             return await _dbContext.Requests.FindAsync(id);
         }
-
+        public async Task<IEnumerable<Request>> GetRequestsAsync()
+        {
+            return await _dbContext.Requests.ToListAsync();
+        }
+       
         public async Task UpdateRequestAsync(Request request)
         {
             _dbContext.Requests.Update(request);

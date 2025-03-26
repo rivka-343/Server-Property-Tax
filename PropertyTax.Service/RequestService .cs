@@ -50,6 +50,20 @@ namespace PropertyTax.Servise
         {
             return await _requestRepository.GetRequestByIdAsync(id);
         }
+        //public async Task<Request> GetRequestsAsync()
+        //{
+        //    return await _requestRepository.GetRequestsAsync();
+        //}
+        public async Task<IEnumerable<RequestMinimalDto>> GetRequestsAsync()
+        {
+            var requests = await _requestRepository.GetRequestsAsync();
+            return requests.Select(r => new RequestMinimalDto
+            {
+        Id = r.Id,
+                UserId = r.UserId,
+                Status = r.Status,
+                RequestDate = r.RequestDate}).ToList();
+        }
         public async Task<RequestStatusDto> GetRequestStatusAsync(int applicationId)
         {
             Request application = await _requestRepository.GetRequestByIdAsync(applicationId);
@@ -135,5 +149,7 @@ namespace PropertyTax.Servise
         {
             return await _requestRepository.GetLatestRequestByUserIdAsync(userId);
         }
+
+       
     }
 }

@@ -14,6 +14,9 @@ namespace PropertyTax.Core.Services
     {
         Task<int> CreateRequestAsync(Request request);
         Task<Request> GetRequestByIdAsync(int id);
+        //Task<IEnumerable<Request>> GetRequestsAsync();
+        Task<IEnumerable<RequestMinimalDto>> GetRequestsAsync(); // שינוי החתימה
+
         Task<RequestStatusDto> GetRequestStatusAsync(int requestId);
         Task UpdateRequestStatusAsync(int requestId, RequestStatusDto updateRequestStatusDto);
         Task UpdateArnonaCalculationAsync(int requestId, CalculateArnonaDto updateArnonaCalculationDto);

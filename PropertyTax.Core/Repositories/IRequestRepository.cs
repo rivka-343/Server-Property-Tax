@@ -16,6 +16,5 @@ namespace PropertyTax.Core.Repositories
         Task<IEnumerable<Request>> GetRequestsAsync();
         Task UpdateRequestAsync(Request request);
 
-
     }
 }
