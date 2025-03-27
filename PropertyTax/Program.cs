@@ -49,9 +49,10 @@ namespace PropertyTax
             });
             builder.Services.AddAuthorization(options =>
             {
-                options.AddPolicy("ResidentOnly", policy => policy.RequireRole("Resident"));
+                options.AddPolicy("AuthenticatedUsers", policy => policy.RequireRole("Resident", "Employee", "Manager"));
                 options.AddPolicy("EmployeeOrManager", policy => policy.RequireRole("Employee", "Manager"));
                 options.AddPolicy("ManagerOnly", policy => policy.RequireRole("Manager"));
+                options.AddPolicy("ResidentOnly", policy => policy.RequireRole("Resident"));
             });
            // builder.Services.AddAWSService<IAmazonS3>(builder.Configuration.GetAWSOptions());
             //builder.Services.AddDefaultAWSOptions(builder.Configuration.GetAWSOptions());
