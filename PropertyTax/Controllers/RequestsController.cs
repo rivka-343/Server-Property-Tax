@@ -53,7 +53,7 @@ namespace PropertyTax.Controllers
         }
 
         [HttpGet("{id}")]
-        [Authorize(Policy = "AuthenticatedUsers")]
+        //[Authorize(Policy = "AuthenticatedUsers")]
         public async Task<IActionResult> GetRequest(int id)
         {
             var request = await _requestService.GetRequestByIdAsync(id);
