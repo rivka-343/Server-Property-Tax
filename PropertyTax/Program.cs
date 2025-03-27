@@ -78,10 +78,10 @@ namespace PropertyTax
             //builder.Services.AddDbContext<ApplicationDbContext>(options =>
             //        options.UseSqlServer("mysql://uyevotthdfrhj5kk:MAA9kQJwXSvw7tRIXhMA@bv3fmicofty9tcfcxbov-mysql.services.clever-cloud.com:3306/bv3fmicofty9tcfcxbov"));
             //   var connectionString = Environment.GetEnvironmentVariable("DATABASE_URL");
-            //  var connectionString = "mysql://uyevotthdfrhj5kk:MAA9kQJwXSvw7tRIXhMA@bv3fmicofty9tcfcxbov-mysql.services.clever-cloud.com:3306/bv3fmicofty9tcfcxbov";
+            //var connectionString = "mysql://uyevotthdfrhj5kk:MAA9kQJwXSvw7tRIXhMA@bv3fmicofty9tcfcxbov-mysql.services.clever-cloud.com:3306/bv3fmicofty9tcfcxbov";
             var connectionString = Environment.GetEnvironmentVariable("DATABASE_URL") ?? throw new Exception("Missing DATABASE_URL in environment variables.");
 
-            // var connectionString = "server=bv3fmicofty9tcfcxbov-mysql.services.clever-cloud.com;database=bv3fmicofty9tcfcxbov;user=uyevotthdfrhj5kk;password=MAA9kQJwXSvw7tRIXhMA;port=3306;";
+           // var connectionString = "server=bv3fmicofty9tcfcxbov-mysql.services.clever-cloud.com;database=bv3fmicofty9tcfcxbov;user=uyevotthdfrhj5kk;password=MAA9kQJwXSvw7tRIXhMA;port=3306;";
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
             builder.Services.AddAutoMapper(typeof(Mapping));

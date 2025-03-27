@@ -116,29 +116,50 @@ namespace PropertyTax.Servise
             }
         }
 
+        //public async Task<int> CreateRequestWithDocumentsAsync(RequestCreateDto requestCreateDto, int userId)
+        //{
+        //    var request = _mapper.Map<Request>(requestCreateDto);
+        //    request.Status = "הבקשה נקלטה במערכת";
+        //    request.UserId = userId;
+        //    request.RequestDate = DateTime.Now;
+        //    var createdRequest = await _requestRepository.CreateRequestAsync(request);
+        //    if (requestCreateDto.DocumentUploads != null && requestCreateDto.DocumentUploads.Any())
+        //    {
+        //        var docs = new List<Doc>();
+        //        foreach (var uploadDto in requestCreateDto.DocumentUploads)
+        //        {
+        //            var doc = new Doc
+        //            {
+        //                FileName = uploadDto.FileName,
+        //                ContentType = uploadDto.ContentType,
+        //                RequestId = createdRequest.Id,
+        //                S3Url = uploadDto.S3Url
+        //            };
+        //            docs.Add(doc);
+        //        }
+        //        await AddDocumentsToRequestAsync(createdRequest.Id, docs);
+        //    }
+        //    return createdRequest.Id;
+        //}
         public async Task<int> CreateRequestWithDocumentsAsync(RequestCreateDto requestCreateDto, int userId)
         {
             var request = _mapper.Map<Request>(requestCreateDto);
             request.Status = "הבקשה נקלטה במערכת";
             request.UserId = userId;
             request.RequestDate = DateTime.Now;
-
             var createdRequest = await _requestRepository.CreateRequestAsync(request);
 
             if (requestCreateDto.DocumentUploads != null && requestCreateDto.DocumentUploads.Any())
             {
-                var docs = new List<Doc>();
-                foreach (var uploadDto in requestCreateDto.DocumentUploads)
+                var docs = requestCreateDto.DocumentUploads.Select(uploadDto => new Doc
                 {
-                    var doc = new Doc
-                    {
-                        FileName = uploadDto.FileName,
-                        ContentType = uploadDto.ContentType,
-                        RequestId = createdRequest.Id,
-                        S3Url = uploadDto.S3Url
-                    };
-                    docs.Add(doc);
-                }
+                    FileName = uploadDto.FileName,
+                    ContentType = uploadDto.ContentType,
+                    RequestId = createdRequest.Id,
+                    S3Url = uploadDto.S3Url,
+                    Type = uploadDto.Type // שמירת סוג המסמך
+                }).ToList();
+
                 await AddDocumentsToRequestAsync(createdRequest.Id, docs);
             }
 

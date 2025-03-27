@@ -175,3 +175,4 @@ C:\לימודים\PropertyTax\PropertyTax\PropertyTax\obj\Debug\net7.0\refint\Pr
 C:\לימודים\PropertyTax\PropertyTax\PropertyTax\obj\Debug\net7.0\PropertyTax.pdb
 C:\לימודים\PropertyTax\PropertyTax\PropertyTax\obj\Debug\net7.0\PropertyTax.genruntimeconfig.cache
 C:\לימודים\PropertyTax\PropertyTax\PropertyTax\obj\Debug\net7.0\ref\PropertyTax.dll
+C:\לימודים\PropertyTax\PropertyTax\PropertyTax\bin\Debug\net7.0\appsettings.json
