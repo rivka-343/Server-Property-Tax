@@ -24,6 +24,8 @@ namespace PropertyTax
     {
         public static void Main(string[] args)
         {
+            DotNetEnv.Env.Load("settings.env");
+
             var builder = WebApplication.CreateBuilder(args);
             builder.Services.AddAuthentication(options =>
             {
@@ -124,11 +126,14 @@ namespace PropertyTax
                           .AllowAnyMethod()
                     .AllowAnyHeader());
             });
+
             builder.Services.AddEndpointsApiExplorer();
             var app = builder.Build();
             var port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
             app.Urls.Add($"http://0.0.0.0:{port}");
-            app.UseCors();
+            //app.UseCors();
+            app.UseCors("AllowAll");
+
             //if (app.Environment.IsDevelopment())
             //{
             //    app.UseSwagger();

@@ -1,2 +1,4 @@
 PropertyTax/appsettings.json
 *.config
+PropertyTax/.env*
+
