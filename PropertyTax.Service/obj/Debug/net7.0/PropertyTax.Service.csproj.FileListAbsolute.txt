@@ -1,0 +1,15 @@
+C:\לימודים\PropertyTax\PropertyTax\PropertyTax.Service\bin\Debug\net7.0\PropertyTax.Service.deps.json
+C:\לימודים\PropertyTax\PropertyTax\PropertyTax.Service\bin\Debug\net7.0\PropertyTax.Service.dll
+C:\לימודים\PropertyTax\PropertyTax\PropertyTax.Service\bin\Debug\net7.0\PropertyTax.Service.pdb
+C:\לימודים\PropertyTax\PropertyTax\PropertyTax.Service\bin\Debug\net7.0\PropertyTax.Core.dll
+C:\לימודים\PropertyTax\PropertyTax\PropertyTax.Service\bin\Debug\net7.0\PropertyTax.Core.pdb
+C:\לימודים\PropertyTax\PropertyTax\PropertyTax.Service\obj\Debug\net7.0\PropertyTax.Service.csproj.AssemblyReference.cache
+C:\לימודים\PropertyTax\PropertyTax\PropertyTax.Service\obj\Debug\net7.0\PropertyTax.Service.GeneratedMSBuildEditorConfig.editorconfig
+C:\לימודים\PropertyTax\PropertyTax\PropertyTax.Service\obj\Debug\net7.0\PropertyTax.Service.AssemblyInfoInputs.cache
+C:\לימודים\PropertyTax\PropertyTax\PropertyTax.Service\obj\Debug\net7.0\PropertyTax.Service.AssemblyInfo.cs
+C:\לימודים\PropertyTax\PropertyTax\PropertyTax.Service\obj\Debug\net7.0\PropertyTax.Service.csproj.CoreCompileInputs.cache
+C:\לימודים\PropertyTax\PropertyTax\PropertyTax.Service\obj\Debug\net7.0\PropertyTax.Service.csproj.CopyComplete
+C:\לימודים\PropertyTax\PropertyTax\PropertyTax.Service\obj\Debug\net7.0\PropertyTax.Service.dll
+C:\לימודים\PropertyTax\PropertyTax\PropertyTax.Service\obj\Debug\net7.0\refint\PropertyTax.Service.dll
+C:\לימודים\PropertyTax\PropertyTax\PropertyTax.Service\obj\Debug\net7.0\PropertyTax.Service.pdb
+C:\לימודים\PropertyTax\PropertyTax\PropertyTax.Service\obj\Debug\net7.0\ref\PropertyTax.Service.dll

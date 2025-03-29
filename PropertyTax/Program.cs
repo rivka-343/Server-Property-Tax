@@ -122,7 +122,9 @@ namespace PropertyTax
             builder.Services.AddCors(options =>
             {
                 options.AddPolicy("AllowAll",
-                  builder => builder.WithOrigins("http://localhost:5173", "https://server-property-tax.onrender.com") // מקור ה-React שלך
+                  builder => builder.WithOrigins("http://localhost:5173",
+                                                 "https://server-property-tax.onrender.com",
+                                                 "https://client-residents.onrender.com") // מקור ה-React שלך
                           .AllowAnyMethod()
                     .AllowAnyHeader());
             });
