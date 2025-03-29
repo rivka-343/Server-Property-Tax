@@ -11,6 +11,12 @@ namespace PropertyTax.Core.Models
     {
         public int Id { get; set; }
         public int UserId { get; set; }
+        public string FName { get; set; }
+        public string LFName { get; set; }
+        public string Gmail { get; set; }
+        public string HomeNumber { get; set; }
+        public string Street { get; set; }
+        public string City { get; set; }
         public string PropertyNumber { get; set; }
         public double AverageMonthlyIncome { get; set; }
         public List<Doc> Documents { get; set; }
