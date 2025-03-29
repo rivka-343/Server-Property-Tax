@@ -12,6 +12,8 @@ using System.Security.Claims;
 namespace PropertyTax.Controllers {
     [ApiController]
     [Route("api/[controller]")]
+    [EnableCors("AllowAll")] // הוסף את השורה הזו
+
     public class RequestsController : ControllerBase {
 
         private readonly IRequestService _requestService;

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace PropertyTax.Core.Models
 {
+
     public enum DocumentType
     {
         IDWithSpousePage,   // צילום ת"ז כולל ספח
