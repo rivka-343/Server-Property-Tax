@@ -24,7 +24,6 @@ namespace PropertyTax
     {
          public static void Main(string[] args) {
                 DotNetEnv.Env.Load("settings.env");
-
                 var builder = WebApplication.CreateBuilder(args);
                 builder.Services.AddAuthentication(options =>
                 {
@@ -66,8 +65,10 @@ namespace PropertyTax
                 builder.Services.AddScoped<IUsersRepository, UsersRepository>();
                 builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
 
-                var connectionString = Environment.GetEnvironmentVariable("DATABASE_URL") ?? throw new Exception("Missing DATABASE_URL in environment variables.");
-                builder.Services.AddDbContext<ApplicationDbContext>(options =>
+           var connectionString = Environment.GetEnvironmentVariable("DATABASE_URL") ?? throw new Exception("Missing DATABASE_URL in environment variables.");
+            // var connectionString = "server=bv3fmicofty9tcfcxbov-mysql.services.clever-cloud.com;database=bv3fmicofty9tcfcxbov;user=uyevotthdfrhj5kk;password=MAA9kQJwXSvw7tRIXhMA;port=3306;";
+
+            builder.Services.AddDbContext<ApplicationDbContext>(options =>
                     options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
                 builder.Services.AddAutoMapper(typeof(Mapping));
                 builder.Services.AddSwaggerGen();

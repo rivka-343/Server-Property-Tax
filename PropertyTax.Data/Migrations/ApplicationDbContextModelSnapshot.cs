@@ -65,6 +65,26 @@ namespace PropertyTax.Data.Migrations
                     b.Property<double>("CalculatedArnona")
                         .HasColumnType("double");
 
+                    b.Property<string>("City")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("FName")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Gmail")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("HomeNumber")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("LFName")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
                     b.Property<string>("PropertyNumber")
                         .IsRequired()
                         .HasColumnType("longtext");
@@ -73,6 +93,10 @@ namespace PropertyTax.Data.Migrations
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Street")
                         .IsRequired()
                         .HasColumnType("longtext");
 
