@@ -124,7 +124,8 @@ namespace PropertyTax
                 options.AddPolicy("AllowAll",
                   builder => builder.WithOrigins("http://localhost:5173",
                                                  "https://server-property-tax.onrender.com",
-                                                 "https://client-residents.onrender.com") // מקור ה-React שלך
+                                                 "https://client-residents.onrender.com",
+                                                 "http://localhost:4200") // מקור ה-React שלך
                           .AllowAnyMethod()
                     .AllowAnyHeader());
             });
