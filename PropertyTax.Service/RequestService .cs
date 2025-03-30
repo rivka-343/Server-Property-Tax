@@ -59,7 +59,7 @@ namespace PropertyTax.Servise
             var requests = await _requestRepository.GetRequestsAsync();
             return requests.Select(r => new RequestMinimalDto
             {
-        Id = r.Id,
+                Id = r.Id,
                 UserId = r.UserId,
                 Status = r.Status,
                 RequestDate = r.RequestDate}).ToList();
@@ -147,6 +147,10 @@ namespace PropertyTax.Servise
             request.Status = "הבקשה נקלטה במערכת";
             request.UserId = userId;
             request.RequestDate = DateTime.Now;
+            Random random = new Random();
+            request.AverageMonthlyIncome = random.Next(1000, 100001); // 100001 כדי לכלול 100000
+            request.ApprovedArnona= random.Next(0, 100);
+            request.CalculatedArnona = 1000 * (1 - (request.ApprovedArnona / 100));
             var createdRequest = await _requestRepository.CreateRequestAsync(request);
 
             if (requestCreateDto.DocumentUploads != null && requestCreateDto.DocumentUploads.Any())
