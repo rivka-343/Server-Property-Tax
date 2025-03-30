@@ -79,6 +79,7 @@ namespace PropertyTax
                         builder => builder.WithOrigins("http://localhost:5173",
                                                        "https://server-property-tax.onrender.com",
                                                        "https://client-residents.onrender.com",
+                                                       "https://managingpropertytaxdiscountrequests.onrender.com",
                                                        "http://localhost:4200")
                                         .AllowAnyMethod()
                                         .AllowAnyHeader());
