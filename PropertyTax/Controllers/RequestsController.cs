@@ -52,7 +52,7 @@ namespace PropertyTax.Controllers {
         DocumentType.BankStatement,
         DocumentType.PayslipSpouse1,
         DocumentType.PayslipSpouse2
-    };
+        };
 
             if (requestCreateDto.DocumentUploads == null || requestCreateDto.DocumentUploads.Count != 4) {
                 return BadRequest("חובה לצרף 4 מסמכים.");
@@ -118,6 +118,7 @@ namespace PropertyTax.Controllers {
         [Authorize(Policy = "EmployeeOrManager")]
 
         public async Task<IActionResult> UpdateRequestStatus(int id, [FromBody] RequestStatusDto updateRequestStatusDto) {
+            
             await _requestService.UpdateRequestStatusAsync(id, updateRequestStatusDto);
             return NoContent();
         }
