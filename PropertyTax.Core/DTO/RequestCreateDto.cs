@@ -11,7 +11,7 @@ namespace PropertyTax.DTO
         public string Street { get; set; }
         public string City { get; set; }
         public string PropertyNumber { get; set; }
-        public double AverageMonthlyIncome { get; set; }
+       // public double AverageMonthlyIncome { get; set; }
         public List<DocDto> DocumentUploads { get; set; }
     }
 }

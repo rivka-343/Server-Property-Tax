@@ -102,6 +102,8 @@ namespace PropertyTax.Controllers {
         }
 
         [HttpGet("{id}/status")]
+        [Authorize(Policy = "AuthenticatedUsers")]
+
         public async Task<IActionResult> GetApplicationStatus(int id) {
             var status = await _requestService.GetRequestStatusAsync(id);
             if (status == null) {
@@ -112,12 +114,16 @@ namespace PropertyTax.Controllers {
         }
 
         [HttpPut("{id}/status")]
+        [Authorize(Policy = "EmployeeOrManager")]
+
         public async Task<IActionResult> UpdateRequestStatus(int id, [FromBody] RequestStatusDto updateRequestStatusDto) {
             await _requestService.UpdateRequestStatusAsync(id, updateRequestStatusDto);
             return NoContent();
         }
 
         [HttpPut("{id}/calculation")]
+        [Authorize(Policy = "EmployeeOrManager")]
+
         public async Task<IActionResult> UpdateArnonaCalculation(int id, [FromBody] CalculateArnonaDto updateArnonaCalculationDto) {
             await _requestService.UpdateArnonaCalculationAsync(id, updateArnonaCalculationDto);
             return NoContent();
