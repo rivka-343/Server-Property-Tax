@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using PropertyTax.Core.Models;
 using PropertyTax.Core.Services;
 using PropertyTax.Servise;
+using Microsoft.AspNetCore.Authorization;
 
 namespace PropertyTax.Controllers {
     [ApiController]
@@ -25,6 +26,7 @@ namespace PropertyTax.Controllers {
         //    return Ok(documents);
         //}
         [HttpGet("request-files/{requestId}")]
+        [Authorize(Policy = "AuthenticatedUsers")]
         public async Task<IActionResult> GetFilesByRequestId(int requestId) {
             // שליפת כל הקבצים לפי מזהה הבקשה
             var files = await _documentService.GetDocumentsByRequestIdAsync(requestId);
