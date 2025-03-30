@@ -79,6 +79,7 @@ namespace PropertyTax.Controllers {
 
             return Ok(request);
         }
+
         [HttpGet]
         [Authorize(Policy = "EmployeeOrManager")]
         public async Task<IActionResult> GetRequest() {
@@ -123,7 +124,6 @@ namespace PropertyTax.Controllers {
 
         [HttpPut("{id}/calculation")]
         [Authorize(Policy = "EmployeeOrManager")]
-
         public async Task<IActionResult> UpdateArnonaCalculation(int id, [FromBody] CalculateArnonaDto updateArnonaCalculationDto) {
             await _requestService.UpdateArnonaCalculationAsync(id, updateArnonaCalculationDto);
             return NoContent();
