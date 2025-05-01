@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using PropertyTax.Core.Services;
 using AutoMapper;
 using PropertyTax.Core.Models;
@@ -29,6 +29,12 @@ namespace PropertyTax.Controllers
             return Ok(users);
         }
 
+        [HttpGet("Residents")]
+        [Authorize(Policy = "EmployeeOrManager")]
+        public async Task<IActionResult> GetResidents() {
+            var users = await _usersService.GetResidents();
+            return Ok(users);
+        }
 
         [HttpGet("{id}", Name = "GetUserById")]
         [Authorize(Policy = "EmployeeOrManager")]

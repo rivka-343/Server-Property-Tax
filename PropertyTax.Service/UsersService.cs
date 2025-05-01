@@ -10,6 +10,7 @@ using Umbraco.Core.Persistence.Repositories;
 using PropertyTax.Core.Models;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNetCore.Identity;
+using PropertyTax.Core.DTO;
 
 namespace PropertyTax.Servise
 {
@@ -29,7 +30,10 @@ namespace PropertyTax.Servise
         {
             return await _usersRepository.GetUsers();
         }
-
+        public async Task<IEnumerable<ResidentDto>> GetResidents()
+        {
+            return await _usersRepository.GetResidents();
+        }
         public async Task<User> GetUserById(int id)
         {
             return await _usersRepository.GetUserById(id);
@@ -55,5 +59,7 @@ namespace PropertyTax.Servise
         {
             return await _usersRepository.GetUserByUsername(name);
         }
+
+       
     }
 }

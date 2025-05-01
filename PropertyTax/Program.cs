@@ -20,6 +20,10 @@ using PropertyTax.Service;
 
 namespace PropertyTax
 {
+    public class OpenAIOptions {
+        public string ApiKey { get; set; } = "";
+        public string BaseUrl { get; set; } = "https://api.openai.com/v1/";
+    }
     public class Program
     {
          public static void Main(string[] args) {
@@ -55,12 +59,29 @@ namespace PropertyTax
                 builder.Services.AddScoped<IAuthService, AuthService>();
                 builder.Services.AddScoped<IS3Service, S3Service>();
                 builder.Services.AddScoped<IUsersService, UsersService>();
-                builder.Services.AddScoped<IOpenAiService, OpenAiService>();
-                builder.Services.AddScoped<IDocumentService, DocumentService>();
+            builder.Services.AddScoped<IPdfParser, PdfParser>();  // PdfPig-based
 
-                builder.Services.AddHttpClient<OpenAiService>();
+            //builder.Services.AddScoped<IOpenAiService, OpenAiService>();
+            builder.Services.AddScoped<IDocumentService, DocumentService>();
 
-                builder.Services.AddScoped<IRequestRepository, RequestRepository>();
+                //builder.Services.AddHttpClient<OpenAiService>();
+            // גישה להגדרות מ-AppSettings (אם השתמשת ב-appsettings.json)
+            builder.Services.Configure<OpenAIOptions>(builder.Configuration.GetSection("OpenAI"));
+
+            // רישום HttpClient עם Authorization אוטומטי
+            builder.Services.AddHttpClient<IOpenAiService, OpenAiService>(client =>
+            {
+                var apiKey = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
+                var baseUrl = Environment.GetEnvironmentVariable("OPENAI_BASE_URL")
+                              ?? "https://api.openai.com/v1/";
+
+                client.BaseAddress = new Uri(baseUrl);
+                client.DefaultRequestHeaders.Authorization =
+                    new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", apiKey);
+                client.DefaultRequestHeaders.Accept.Add(
+                    new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+            });
+            builder.Services.AddScoped<IRequestRepository, RequestRepository>();
                 builder.Services.AddScoped<IDocumentRepository, DocumentRepository>();
                 builder.Services.AddScoped<IUsersRepository, UsersRepository>();
                 builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
@@ -77,6 +98,7 @@ namespace PropertyTax
                 {
                     options.AddPolicy("AllowAll",
                         builder => builder.WithOrigins("http://localhost:5173",
+                                                       "http://localhost:8080",
                                                        "https://server-property-tax.onrender.com",
                                                        "https://client-residents.onrender.com",
                                                        "https://managingpropertytaxdiscountrequests.onrender.com",
@@ -106,10 +128,10 @@ namespace PropertyTax
                 });
 
                 builder.Services.AddEndpointsApiExplorer();
+
                 var app = builder.Build();
                 var port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
-                app.Urls.Add($"http://0.0.0.0:{port}");
-
+               // app.Urls.Add($"http://0.0.0.0:{port}");
                 app.UseCors("AllowAll"); // הגדר CORS לפני authentication ו authorization
 
                 if (app.Environment.IsDevelopment() || Environment.GetEnvironmentVariable("ENABLE_SWAGGER") == "true") {

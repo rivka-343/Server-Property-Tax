@@ -151,6 +151,8 @@ namespace PropertyTax.Servise
             request.AverageMonthlyIncome = random.Next(1000, 100001); // 100001 כדי לכלול 100000
             request.ApprovedArnona= random.Next(0, 100);
             request.CalculatedArnona = 1000 * (1 - (request.ApprovedArnona / 100));
+
+
             var createdRequest = await _requestRepository.CreateRequestAsync(request);
 
             if (requestCreateDto.DocumentUploads != null && requestCreateDto.DocumentUploads.Any())

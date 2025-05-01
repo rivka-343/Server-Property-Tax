@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using PropertyTax.Core.DTO;
 using PropertyTax.Core.Models;
 using PropertyTax.Core.Repositories;
 using System;
@@ -22,6 +23,18 @@ namespace PropertyTax.Data.Repositories
             return await _dbContext.Users.ToListAsync();
         }
 
+        public async Task<IEnumerable<ResidentDto>> GetResidents()
+        {
+            return await _dbContext.Users
+                   .Where(u => u.Role == "Resident")
+                   .Select(u => new ResidentDto
+                   {
+                       Id = u.Id,
+                       Username = u.Username,
+                       IdNumber = u.IdNumber
+                   })
+                   .ToListAsync();
+        }
         public async Task<User> GetUserById(int id)
         {
             return await _dbContext.Users.FindAsync(id);

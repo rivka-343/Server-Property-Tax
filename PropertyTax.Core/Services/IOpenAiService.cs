@@ -9,5 +9,7 @@ namespace PropertyTax.Core.Services
     public interface IOpenAiService
     {
        Task<string> GetChatResponse(string userMessage);
+        Task<IEnumerable<string>> ListModelsAsync();
+
     }
 }

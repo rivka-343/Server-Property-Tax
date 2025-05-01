@@ -8,6 +8,7 @@ using PropertyTax.Core.DTO;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
+using System.Text.Json;
 
 namespace PropertyTax.Controllers {
     [ApiController]
@@ -27,10 +28,16 @@ namespace PropertyTax.Controllers {
 
         [HttpPost("Chat")]
         public async Task<IActionResult> Chat([FromBody] ChatRequest request) {
-            string response = await _openAiService.GetChatResponse(request.Message);
-            return Ok(new { Response = response });
+            //string response = await _openAiService.GetChatResponse(request.Message);
+            //return Ok(new { Response = response });
+            var reply = await _openAiService.GetChatResponse(request.Message);
+            return Ok(new { response = reply });
         }
-
+        [HttpGet("xx")]
+        public async Task<IEnumerable<string>> ListModelsAsync() {
+          
+            return await _openAiService.ListModelsAsync();
+        }
 
         //[HttpPost("CreateRequest")]
         //[Authorize(Policy = "ResidentOnly")]
