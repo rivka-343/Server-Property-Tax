@@ -9,6 +9,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using System.Text.Json;
+using System.Net.Http.Headers;
+using System.Text;
 
 namespace PropertyTax.Controllers {
     [ApiController]
@@ -26,17 +28,24 @@ namespace PropertyTax.Controllers {
             _openAiService = openAiService;
         }
 
+
         [HttpPost("Chat")]
         public async Task<IActionResult> Chat([FromBody] ChatRequest request) {
             //string response = await _openAiService.GetChatResponse(request.Message);
             //return Ok(new { Response = response });
-            var reply = await _openAiService.GetChatResponse(request.Message);
+            var reply = await _openAiService.GetChatResponse(request.Message, "Please extract the values from the \"Credit\" column and return only their total sum as a number, without any additional text or formatting.\nIf you're unsure which column is \"Credit\", return the sum of the rightmost numeric column.\nUse standard English number format");
             return Ok(new { response = reply });
         }
         [HttpGet("xx")]
         public async Task<IEnumerable<string>> ListModelsAsync() {
-          
+
             return await _openAiService.ListModelsAsync();
+        }
+
+
+        [HttpGet("run")]
+        public async Task<string> run() {
+            return await _openAiService.Run();
         }
 
         //[HttpPost("CreateRequest")]
@@ -55,11 +64,11 @@ namespace PropertyTax.Controllers {
             // רשימת סוגי המסמכים הנדרשים
             var requiredTypes = new List<DocumentType>
             {
-        DocumentType.IDWithSpousePage,
-        DocumentType.BankStatement,
-        DocumentType.PayslipSpouse1,
-        DocumentType.PayslipSpouse2
-        };
+                DocumentType.IDWithSpousePage,
+                DocumentType.BankStatement,
+                DocumentType.PayslipSpouse1,
+                DocumentType.PayslipSpouse2
+            };
 
             if (requestCreateDto.DocumentUploads == null || requestCreateDto.DocumentUploads.Count != 4) {
                 return BadRequest("חובה לצרף 4 מסמכים.");
@@ -111,7 +120,6 @@ namespace PropertyTax.Controllers {
 
         [HttpGet("{id}/status")]
         [Authorize(Policy = "AuthenticatedUsers")]
-
         public async Task<IActionResult> GetApplicationStatus(int id) {
             var status = await _requestService.GetRequestStatusAsync(id);
             if (status == null) {
@@ -123,9 +131,8 @@ namespace PropertyTax.Controllers {
 
         [HttpPut("{id}/status")]
         [Authorize(Policy = "EmployeeOrManager")]
-
         public async Task<IActionResult> UpdateRequestStatus(int id, [FromBody] RequestStatusDto updateRequestStatusDto) {
-            
+
             await _requestService.UpdateRequestStatusAsync(id, updateRequestStatusDto);
             return NoContent();
         }

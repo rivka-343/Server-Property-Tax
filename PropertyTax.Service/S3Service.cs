@@ -11,6 +11,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 using Amazon.S3.Model;
+using System.Drawing;
+
 namespace PropertyTax.Servise
 {
     public class S3Service : IS3Service
@@ -36,7 +38,6 @@ namespace PropertyTax.Servise
         {
             // יצירת Key עם תיקיה לכל משתמש
             var fileKey = $"uploads/user_{userId}/{Guid.NewGuid()}_{fileName}";
-
             var request = new GetPreSignedUrlRequest
             {
                 BucketName = _bucketName,
@@ -53,6 +54,11 @@ namespace PropertyTax.Servise
 
         public async Task<string> GetDownloadUrlAsync(string fileName)
         {
+            Console.WriteLine($"Bucket: {_bucketName}");
+            Console.WriteLine($"AccessKey is null:"+ Environment.GetEnvironmentVariable("AWS_ACCESS_KEY"));
+            Console.WriteLine($"SecretKey is null:" + Environment.GetEnvironmentVariable("AWS_SECRET_KEY"));
+            Console.WriteLine($"Region: "+Environment.GetEnvironmentVariable("AWS_REGION"));
+            Console.WriteLine(_s3Client);
             var request = new GetPreSignedUrlRequest
             {
                 BucketName = _bucketName,
@@ -60,6 +66,7 @@ namespace PropertyTax.Servise
                 Verb = HttpVerb.GET,
                 Expires = DateTime.UtcNow.AddMinutes(30) // תוקף של 30 דקות
             };
+            Console.WriteLine(request);
             return _s3Client.GetPreSignedURL(request);
         }
 

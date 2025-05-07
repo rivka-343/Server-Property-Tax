@@ -29,6 +29,7 @@ namespace PropertyTax.Controllers {
         [Authorize(Policy = "AuthenticatedUsers")]
         public async Task<IActionResult> GetFilesByRequestId(int requestId) {
             // שליפת כל הקבצים לפי מזהה הבקשה
+
             var files = await _documentService.GetDocumentsByRequestIdAsync(requestId);
 
             if (files == null || files.Count == 0) {
