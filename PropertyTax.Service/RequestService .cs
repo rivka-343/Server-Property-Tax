@@ -22,16 +22,18 @@ namespace PropertyTax.Servise
     {
         private readonly IRequestRepository _requestRepository;
         private readonly IDocumentRepository _documentRepository;
+        private readonly IPropertyRepository _propertyRepository;
         private readonly IS3Service _s3Service;
         private readonly IMapper _mapper;
         private readonly IOpenAiService _iopenAiService;
         private readonly IDocumentService _documentService;
 
-        public RequestService(IRequestRepository requestRepository, IDocumentRepository documentRepository,
+        public RequestService(IRequestRepository requestRepository, IDocumentRepository documentRepository, IPropertyRepository propertyRepository,
             IS3Service s3Service, IMapper mapper, IOpenAiService iopenAiService, IDocumentService documentService)
         {
             _requestRepository = requestRepository;
             _documentRepository = documentRepository;
+            _propertyRepository = propertyRepository;
             _s3Service = s3Service;
             _mapper = mapper;
             _iopenAiService = iopenAiService;
@@ -42,10 +44,6 @@ namespace PropertyTax.Servise
         {
             return await _requestRepository.GetRequestByIdAsync(id);
         }
-        //public async Task<Request> GetRequestsAsync()
-        //{
-        //    return await _requestRepository.GetRequestsAsync();
-        //}
         public async Task<IEnumerable<RequestMinimalDto>> GetRequestsAsync()
         {
             var requests = await _requestRepository.GetRequestsAsync();
@@ -92,8 +90,6 @@ namespace PropertyTax.Servise
 
             await _requestRepository.UpdateRequestAsync(request);
         }
-
-
         public async Task<int> CreateRequestAsync(Request request)
         {
             var createdRequest = await _requestRepository.CreateRequestAsync(request);
@@ -107,72 +103,6 @@ namespace PropertyTax.Servise
                 await _documentRepository.CreateDocumentsAsync(doc);
             }
         }
-
-        //public async Task<double>  SumSallery(string S3Url)
-        //{
-        //    var downloadUrl = await _s3Service.GetDownloadUrlAsync(S3Url);
-        //   Console.WriteLine(downloadUrl);
-        //    var x=  await _iopenAiService.GetChatResponse(downloadUrl, "Please extract the values from the \"Credit\" column and return only their total sum as a number, without any additional text or formatting.\r\nIf you're unsure which column is \"Credit\", return the sum of the rightmost numeric column.\r\nUse standard English number format");
-        //    Console.WriteLine("התשובה שחזרה מה AI היא:");
-        //    Console.WriteLine(x);
-        //    if (double.TryParse(x, out double result))
-        //    {
-        //        return result;
-        //    }
-        //    else
-        //    {
-        //        throw new InvalidOperationException("התשובה שהתקבלה אינה מספר חוקי: " + x);
-        //    }
-        //}
-        //public async Task<int> SumPeople(string S3Url)
-        //{
-        //    var downloadUrl = await _s3Service.GetDownloadUrlAsync(S3Url);
-        //    Console.WriteLine(downloadUrl);
-        //    var x = await _iopenAiService.GetChatResponse(downloadUrl, "You will receive an Israeli ID card and an attached \"Sefach\" (family appendix).\r\nFrom these documents, please identify how many children are listed in the family.\r\nReturn only the number of children as a digit (e.g., 3), with no extra explanation or text.\r\nIf the information is unclear or incomplete, return 0.\r\n\r\n");
-        //    Console.WriteLine("התשובה שחזרה מה AI היא:");
-        //    Console.WriteLine(x);
-        //    if (int.TryParse(x, out int result))
-        //    {
-        //        return result;
-        //    }
-        //    else
-        //    {
-        //        throw new InvalidOperationException("התשובה שהתקבלה אינה מספר חוקי: " + x);
-        //    }
-        //}
-       
-        //public async Task<int> CreateRequestWithDocumentsAsync(RequestCreateDto requestCreateDto, int userId)
-        //{
-        //    var request = _mapper.Map<Request>(requestCreateDto);
-        //    request.Status = "הבקשה נקלטה במערכת";
-        //    request.UserId = userId;
-        //    request.RequestDate = DateTime.Now;
-        //    var createdRequest = await _requestRepository.CreateRequestAsync(request);
-
-        //    if (requestCreateDto.DocumentUploads != null && requestCreateDto.DocumentUploads.Any())
-        //    {
-        //        var docs = requestCreateDto.DocumentUploads.Select(uploadDto => new Doc
-        //        {
-        //            FileName = uploadDto.FileName,
-        //            ContentType = uploadDto.ContentType,
-        //            RequestId = createdRequest.Id,
-        //            S3Url = uploadDto.S3Url,
-        //            Type = uploadDto.Type // שמירת סוג המסמך
-        //        }).ToList();
-
-        //        await AddDocumentsToRequestAsync(createdRequest.Id, docs);
-        //        request.AverageMonthlyIncome = await SumSallery(docs[1].S3Url);// 100001 כדי לכלול 100000
-        //        int NumberPeople = await SumPeople(docs[0].S3Url);
-        //        double broto1 = await BrotoSallery(docs[2].S3Url);
-        //        double broto2 = await BrotoSallery(docs[3].S3Url);
-        //        Console.WriteLine(NumberPeople);
-        //        Random random = new Random();
-        //        request.ApprovedArnona = random.Next(0, 100);
-        //        request.CalculatedArnona = 1000 * (1 - (request.ApprovedArnona / 100));
-        //    }
-        //    await _requestRepository.UpdateRequestAsync(request);
-        //    return createdRequest.Id;
-        //}
         public async Task<T> AnalyzeDocumentAsync<T>(string S3Url, string prompt)
         {
             var downloadUrl = await _s3Service.GetDownloadUrlAsync(S3Url);
@@ -244,7 +174,15 @@ namespace PropertyTax.Servise
                         discountPercentage = 0;
 
                     request.ApprovedArnona = discountPercentage;
-                    request.CalculatedArnona = 1000 * (1 - (request.ApprovedArnona / 100));
+                    PropertyBaseData p =await _propertyRepository.GetByPropertyNumberAsync(int.Parse(request.HomeNumber));
+                    // התייחסות לרמה סוציו-אקונומית
+                    int socioeconomicLevel = p.SocioEconomicLevel;
+                    if (socioeconomicLevel <= 4)
+                    {
+                        discountPercentage += 10;
+                        if (discountPercentage > 100) discountPercentage = 100;
+                    }
+                    request.CalculatedArnona = (p.AreaInSquareMeters) * (1 - (request.ApprovedArnona / 100));
                 }
                 else
                     request.AverageMonthlyIncome = 0;
@@ -257,7 +195,10 @@ namespace PropertyTax.Servise
         {
             return await _requestRepository.GetLatestRequestByUserIdAsync(userId);
         }
+        //public async Task<Request> GetRequestsAsync()
+        //{
+        //    return await _requestRepository.GetRequestsAsync();
+        //}
 
-       
     }
 }

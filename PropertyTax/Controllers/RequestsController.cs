@@ -29,6 +29,8 @@ namespace PropertyTax.Controllers {
         }
 
 
+
+
         [HttpPost("Chat")]
         public async Task<IActionResult> Chat([FromBody] ChatRequest request) {
             //string response = await _openAiService.GetChatResponse(request.Message);
