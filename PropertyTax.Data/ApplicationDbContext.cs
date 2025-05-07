@@ -18,5 +18,7 @@ namespace PropertyTax.Data
         public DbSet<User> Users { get; set; }
         public DbSet<Request> Requests { get; set; }
         public DbSet<Doc> Documents { get; set; }
+
+        public DbSet<PropertyBaseData> PropertyBaseData { get; set; }
     }
 }

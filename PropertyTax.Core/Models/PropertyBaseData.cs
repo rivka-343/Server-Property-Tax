@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -8,7 +9,8 @@ namespace PropertyTax.Core.Models
 {
     public class PropertyBaseData
     {
-        public string PropertyNumber { get; set; } // למשל מס' נכס
+        [Key]
+        public int PropertyNumber { get; set; } // למשל מס' נכס
         public string Neighborhood { get; set; } // שכונה
         public string Street { get; set; }       // רחוב
         public string HouseNumber { get; set; }  // מספר בית

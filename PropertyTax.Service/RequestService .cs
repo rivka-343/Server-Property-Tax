@@ -223,17 +223,28 @@ namespace PropertyTax.Servise
 
                 Console.WriteLine($"סכום בבנק: {bankIncome}, סכום בתלושים: {totalPaySlipsIncome}");
 
-                // בדיקת התאמה עם טולרנס סביר
-
-
                 if (Math.Abs(bankIncome - totalPaySlipsIncome) <= 100)
                 { 
-                    request.AverageMonthlyIncome = totalPaySlipsIncome;
+                    request.AverageMonthlyIncome = totalPaySlipsIncome/(numberPeople+2);
 
-                    Random random = new Random();
-                    request.ApprovedArnona = random.Next(0, 100);
+                    double discountPercentage;
+
+                    // מדרגות הנחה
+                    if (request.AverageMonthlyIncome < 2000)
+                        discountPercentage = 90;
+                    else if (request.AverageMonthlyIncome < 3000)
+                        discountPercentage = 70;
+                    else if (request.AverageMonthlyIncome < 4000)
+                        discountPercentage = 50;
+                    else if (request.AverageMonthlyIncome < 5000)
+                        discountPercentage = 30;
+                    else if (request.AverageMonthlyIncome < 6000)
+                        discountPercentage = 10;
+                    else
+                        discountPercentage = 0;
+
+                    request.ApprovedArnona = discountPercentage;
                     request.CalculatedArnona = 1000 * (1 - (request.ApprovedArnona / 100));
-
                 }
                 else
                     request.AverageMonthlyIncome = 0;
