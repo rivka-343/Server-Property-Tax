@@ -52,7 +52,8 @@ namespace PropertyTax.Servise
                 Id = r.Id,
                 UserId = r.UserId,
                 Status = r.Status,
-                RequestDate = r.RequestDate}).ToList();
+                RequestDate = r.RequestDate
+            }).ToList();
         }
         public async Task<RequestStatusDto> GetRequestStatusAsync(int applicationId)
         {
@@ -106,18 +107,14 @@ namespace PropertyTax.Servise
         public async Task<T> AnalyzeDocumentAsync<T>(string S3Url, string prompt)
         {
             var downloadUrl = await _s3Service.GetDownloadUrlAsync(S3Url);
-            Console.WriteLine(downloadUrl);
             var response = await _iopenAiService.GetChatResponse(downloadUrl, prompt);
-            Console.WriteLine("התשובה שחזרה מה AI היא:");
-            Console.WriteLine(response);
-
             try
             {
                 return (T)Convert.ChangeType(response, typeof(T));
             }
             catch
             {
-                throw new InvalidOperationException("התשובה שהתקבלה אינה מספר חוקי: " + response);
+                return (T)Convert.ChangeType(0, typeof(T));
             }
         }
         public async Task<int> CreateRequestWithDocumentsAsync(RequestCreateDto requestCreateDto, int userId)
@@ -126,9 +123,7 @@ namespace PropertyTax.Servise
             request.Status = "הבקשה נקלטה במערכת";
             request.UserId = userId;
             request.RequestDate = DateTime.Now;
-
             var createdRequest = await _requestRepository.CreateRequestAsync(request);
-
             if (requestCreateDto.DocumentUploads != null && requestCreateDto.DocumentUploads.Any())
             {
                 var docs = requestCreateDto.DocumentUploads.Select(uploadDto => new Doc
@@ -142,50 +137,68 @@ namespace PropertyTax.Servise
 
                 await AddDocumentsToRequestAsync(createdRequest.Id, docs);
 
-                double bankIncome = await AnalyzeDocumentAsync<double>(docs[1].S3Url, "Please extract the values from the \"Credit\" column and return only their total sum as a number, without any additional text or formatting.\nIf you're unsure which column is \"Credit\", return the sum of the rightmost numeric column.\nUse standard English number format");
+                double bankIncome = await AnalyzeDocumentAsync<double>(docs[1].S3Url, "You are analyzing an Israeli bank statement.\n" + "Please sum all incoming transactions that appear to be salary deposits (typically with descriptions such as \"salary\", \"pay\", \"תלוש\", etc).\n" + "Return only the total sum of these transactions as a number with no text.");
 
                 int numberPeople = await AnalyzeDocumentAsync<int>(docs[0].S3Url, "You will receive an Israeli ID card and an attached \"Sefach\" (family appendix).\nFrom these documents, please identify how many children are listed in the family.\nReturn only the number of children as a digit (e.g., 3), with no extra explanation or text.\nIf the information is unclear or incomplete, return 0.");
 
                 double broto1 = await AnalyzeDocumentAsync<double>(docs[2].S3Url, "You will receive a payslip. From this document, extract the final net amount that was actually transferred to the employee's bank account. Return only the amount, as a number (e.g., 8421.55), with no additional words. Be precise and careful — if you are not 100% certain of the correct amount, do not guess or invent a value. In such case, return null.");
 
                 double broto2 = await AnalyzeDocumentAsync<double>(docs[3].S3Url, "You will receive a payslip. From this document, extract the final net amount that was actually transferred to the employee's bank account. Return only the amount, as a number (e.g., 8421.55), with no additional words. Be precise and careful — if you are not 100% certain of the correct amount, do not guess or invent a value. In such case, return null.");
+
                 double totalPaySlipsIncome = broto1 + broto2;
 
                 Console.WriteLine($"סכום בבנק: {bankIncome}, סכום בתלושים: {totalPaySlipsIncome}");
 
-                if (Math.Abs(bankIncome - totalPaySlipsIncome) <= 100)
-                { 
-                    request.AverageMonthlyIncome = totalPaySlipsIncome/(numberPeople+2);
+                //if (Math.Abs(bankIncome - totalPaySlipsIncome) <= 100)
+                //{ 
+                request.AverageMonthlyIncome = totalPaySlipsIncome / (numberPeople + 2);
 
-                    double discountPercentage;
+                double discountPercentage;
 
-                    // מדרגות הנחה
-                    if (request.AverageMonthlyIncome < 2000)
-                        discountPercentage = 90;
-                    else if (request.AverageMonthlyIncome < 3000)
-                        discountPercentage = 70;
-                    else if (request.AverageMonthlyIncome < 4000)
-                        discountPercentage = 50;
-                    else if (request.AverageMonthlyIncome < 5000)
-                        discountPercentage = 30;
-                    else if (request.AverageMonthlyIncome < 6000)
-                        discountPercentage = 10;
-                    else
-                        discountPercentage = 0;
-
-                    request.ApprovedArnona = discountPercentage;
-                    PropertyBaseData p =await _propertyRepository.GetByPropertyNumberAsync(int.Parse(request.HomeNumber));
-                    // התייחסות לרמה סוציו-אקונומית
-                    int socioeconomicLevel = p.SocioEconomicLevel;
-                    if (socioeconomicLevel <= 4)
-                    {
-                        discountPercentage += 10;
-                        if (discountPercentage > 100) discountPercentage = 100;
-                    }
-                    request.CalculatedArnona = (p.AreaInSquareMeters) * (1 - (request.ApprovedArnona / 100));
-                }
+                // מדרגות הנחה
+                if (request.AverageMonthlyIncome < 2000)
+                    discountPercentage = 90;
+                else if (request.AverageMonthlyIncome < 3000)
+                    discountPercentage = 70;
+                else if (request.AverageMonthlyIncome < 4000)
+                    discountPercentage = 50;
+                else if (request.AverageMonthlyIncome < 5000)
+                    discountPercentage = 30;
+                else if (request.AverageMonthlyIncome < 6000)
+                    discountPercentage = 10;
                 else
-                    request.AverageMonthlyIncome = 0;
+                    discountPercentage = 0;
+
+                request.ApprovedArnona = discountPercentage;
+
+                PropertyBaseData p = await _propertyRepository.GetByPropertyNumberAsync(request.PropertyNumber);
+                // התייחסות לרמה סוציו-אקונומית
+                double priceForMeter = 20;
+                int socioeconomicLevel = p.SocioEconomicLevel;
+                if (socioeconomicLevel == 4)
+                {
+                    priceForMeter = 17.5;
+                }
+                if (socioeconomicLevel == 3)
+                {
+                    priceForMeter = 15.2;
+                }
+                if (socioeconomicLevel == 2)
+                {
+                    priceForMeter = 12.5;
+                }
+                if (socioeconomicLevel == 1)
+                {
+                    priceForMeter = 10;
+                }
+                request.CalculatedArnona = (p.AreaInSquareMeters) * priceForMeter *
+                        (1 - (request.ApprovedArnona / 100));
+                //}
+                //else
+                //  {
+                //  request.AverageMonthlyIncome = 0;
+                //  request.Status="האימות עם הבנק נכשל יש לבדוק שוב ידנית"
+                //  }
             }
 
             await _requestRepository.UpdateRequestAsync(request);

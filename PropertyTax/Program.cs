@@ -59,7 +59,7 @@ namespace PropertyTax
                 builder.Services.AddScoped<IAuthService, AuthService>();
                 builder.Services.AddScoped<IS3Service, S3Service>();
                 builder.Services.AddScoped<IUsersService, UsersService>();
-            builder.Services.AddScoped<IPdfParser, PdfParser>();  // PdfPig-based
+                builder.Services.AddScoped<IPdfParser, PdfParser>();  // PdfPig-based
 
             //builder.Services.AddScoped<IOpenAiService, OpenAiService>();
             builder.Services.AddScoped<IDocumentService, DocumentService>();
@@ -85,6 +85,7 @@ namespace PropertyTax
                 builder.Services.AddScoped<IDocumentRepository, DocumentRepository>();
                 builder.Services.AddScoped<IUsersRepository, UsersRepository>();
                 builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
+                builder.Services.AddScoped<IPropertyRepository, PropertyRepository>();
 
            var connectionString = Environment.GetEnvironmentVariable("DATABASE_URL") ?? throw new Exception("Missing DATABASE_URL in environment variables.");
             // var connectionString = "server=bv3fmicofty9tcfcxbov-mysql.services.clever-cloud.com;database=bv3fmicofty9tcfcxbov;user=uyevotthdfrhj5kk;password=MAA9kQJwXSvw7tRIXhMA;port=3306;";

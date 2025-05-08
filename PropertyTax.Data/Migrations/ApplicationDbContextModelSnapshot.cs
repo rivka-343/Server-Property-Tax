@@ -118,9 +118,8 @@ namespace PropertyTax.Data.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<string>("PropertyNumber")
-                        .IsRequired()
-                        .HasColumnType("longtext");
+                    b.Property<int>("PropertyNumber")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("RequestDate")
                         .HasColumnType("datetime(6)");

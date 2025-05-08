@@ -16,9 +16,9 @@ namespace PropertyTax.Data.Repositories
         {
             _dbContext = dbContext;
         }
-        public async Task<PropertyBaseData> GetByPropertyNumberAsync(int propertyNumber)
+        public async Task<PropertyBaseData> GetByPropertyNumberAsync(int PropertyNumber)
         {
-            return await _dbContext.PropertyBaseData.FindAsync(propertyNumber);
+            return await _dbContext.PropertyBaseData.FindAsync(PropertyNumber);
         }
     }
 }
