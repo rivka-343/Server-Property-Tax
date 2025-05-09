@@ -117,6 +117,12 @@ namespace PropertyTax.Servise
                 return (T)Convert.ChangeType(0, typeof(T));
             }
         }
+        //****
+        //בפונקציה הזו מנסים לאמת נתונים בין תלוש המשכורת לבין הנתונים בבנק 
+        //האימות מתבצע ע"י הAI
+        //ולכן הוא לא מספיק אמין ונכשל הרבה פעמים
+        //לכן הוא נמצא בהערה
+        //******
         public async Task<int> CreateRequestWithDocumentsAsync(RequestCreateDto requestCreateDto, int userId)
         {
             var request = _mapper.Map<Request>(requestCreateDto);

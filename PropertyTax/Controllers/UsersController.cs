@@ -70,7 +70,7 @@ namespace PropertyTax.Controllers
 
       
         [HttpPut("{id}")]
-        [Authorize(Policy = "ResidentOnly")]
+        [Authorize(Policy = "AuthenticatedUsers")]
         public async Task<IActionResult> UpdateUser(int id, [FromBody] User updatedUser)
         {
             if (updatedUser == null || updatedUser.Id != id)
@@ -89,7 +89,7 @@ namespace PropertyTax.Controllers
        
         
         [HttpDelete("{id}")]
-        [Authorize(Policy = "ManagerOnly")]
+        [Authorize(Policy = "AuthenticatedUsers")]
         public async Task<IActionResult> DeleteUser(int id)
         {
             var result = await _usersService.DeleteUser(id);

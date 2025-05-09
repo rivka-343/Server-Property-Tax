@@ -22,21 +22,12 @@ namespace PropertyTax.Controllers {
         private readonly IRequestService _requestService;
         private readonly IMapper _mapper;
         private readonly IOpenAiService _openAiService;
-        private readonly IPropertyRepository _propertyRepository;
 
-        public RequestsController(IRequestService requestService, IMapper mapper, IOpenAiService openAiService, IPropertyRepository propertyRepository) {
+        public RequestsController(IRequestService requestService, IMapper mapper, IOpenAiService openAiService) {
             _requestService = requestService;
             _mapper = mapper;
             _openAiService = openAiService;
-            _propertyRepository=propertyRepository;
         }
-
-        [HttpGet("number")]
-        public async Task<PropertyBaseData> number(int x) {
-            return await _propertyRepository.GetByPropertyNumberAsync(x);
-        }
-
-
 
         [HttpPost("Chat")]
         public async Task<IActionResult> Chat([FromBody] ChatRequest request) {
