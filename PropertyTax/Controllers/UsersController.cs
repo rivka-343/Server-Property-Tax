@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Authorization;
 using Amazon.Auth.AccessControlPolicy;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using PropertyTax.DTO;
+
 namespace PropertyTax.Controllers
 {
     [ApiController]
@@ -71,14 +73,14 @@ namespace PropertyTax.Controllers
       
         [HttpPut("{id}")]
         [Authorize(Policy = "AuthenticatedUsers")]
-        public async Task<IActionResult> UpdateUser(int id, [FromBody] User updatedUser)
+        public async Task<IActionResult> UpdateUser(int id, [FromBody] UserDto updatedUser)
         {
-            if (updatedUser == null || updatedUser.Id != id)
+            if (updatedUser == null)
             {
                 return BadRequest("Invalid user data");
             }
 
-            var user = await _usersService.UpdateUser(updatedUser);
+            var user = await _usersService.UpdateUser(id,updatedUser);
             if (user == null)
             {
                 return NotFound();

@@ -1,5 +1,6 @@
 ﻿using PropertyTax.Core.DTO;
 using PropertyTax.Core.Models;
+using PropertyTax.DTO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,7 +17,7 @@ namespace PropertyTax.Core.Services
         Task<User> GetUserById(int id);
         Task<User> GetUserByUsername(string name);
         Task<User> Register(User user, string password);
-        Task<User> UpdateUser(User updatedUser);
+        Task<User> UpdateUser(int id, UserDto updatedUser);
         Task<bool> DeleteUser(int id);
     }
 }
