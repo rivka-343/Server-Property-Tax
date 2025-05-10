@@ -11,6 +11,7 @@ using PropertyTax.Core.Models;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNetCore.Identity;
 using PropertyTax.Core.DTO;
+using PropertyTax.DTO;
 
 namespace PropertyTax.Servise
 {
@@ -45,9 +46,24 @@ namespace PropertyTax.Servise
             return await _usersRepository.AddUser(user);
         }
 
-        public async Task<User> UpdateUser(User updatedUser)
+        public async Task<User> UpdateUser(int id, UserDto updatedUser)
         {
-            return await _usersRepository.UpdateUser(updatedUser);
+            User user = await GetUserById(id);
+
+            // עדכון רק של שדות שנשלחו
+            if (!string.IsNullOrEmpty(updatedUser.Username))
+                user.Username = updatedUser.Username;
+
+            if (!string.IsNullOrEmpty(updatedUser.Password))
+                user.PasswordHash = updatedUser.Password;
+
+            if (!string.IsNullOrEmpty(updatedUser.IdNumber))
+                user.IdNumber = updatedUser.IdNumber;
+
+            if (!string.IsNullOrEmpty(updatedUser.Role))
+                user.Role = updatedUser.Role;
+
+            return await _usersRepository.UpdateUser(user);
         }
 
         public async Task<bool> DeleteUser(int id)
