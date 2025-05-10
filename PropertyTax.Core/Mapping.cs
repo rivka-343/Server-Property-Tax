@@ -23,6 +23,8 @@ namespace PropertyTax.Core
             CreateMap<RequestCreateDto, Request>().ReverseMap();
             CreateMap<Request, RequestStatusDto>().ReverseMap();
             CreateMap<Request, CalculateArnonaDto>().ReverseMap();
+            CreateMap<IncomeDiscountTierDto, IncomeDiscountTier>().ReverseMap();
+            CreateMap<SocioEconomicPricingDto, SocioEconomicPricing>().ReverseMap();
         }
     }
 }

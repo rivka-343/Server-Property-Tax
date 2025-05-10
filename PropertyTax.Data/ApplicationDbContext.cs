@@ -18,7 +18,11 @@ namespace PropertyTax.Data
         public DbSet<User> Users { get; set; }
         public DbSet<Request> Requests { get; set; }
         public DbSet<Doc> Documents { get; set; }
-
         public DbSet<PropertyBaseData> PropertyBaseData { get; set; }
+        public DbSet<IncomeDiscountTier> IncomeDiscountTiers { get; set; }
+        public DbSet<SocioEconomicPricing> SocioEconomicPricings { get; set; }
+        public DbSet<SystemSettings> SystemSettings { get; set; }
+
+
     }
 }

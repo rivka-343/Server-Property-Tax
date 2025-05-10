@@ -27,9 +27,10 @@ namespace PropertyTax.Servise
         private readonly IMapper _mapper;
         private readonly IOpenAiService _iopenAiService;
         private readonly IDocumentService _documentService;
+        private readonly IDiscountSettingsService _discountSettingsService;
 
         public RequestService(IRequestRepository requestRepository, IDocumentRepository documentRepository, IPropertyRepository propertyRepository,
-            IS3Service s3Service, IMapper mapper, IOpenAiService iopenAiService, IDocumentService documentService)
+            IS3Service s3Service, IMapper mapper, IOpenAiService iopenAiService, IDocumentService documentService, IDiscountSettingsService discountSettingsService)
         {
             _requestRepository = requestRepository;
             _documentRepository = documentRepository;
@@ -38,6 +39,7 @@ namespace PropertyTax.Servise
             _mapper = mapper;
             _iopenAiService = iopenAiService;
             _documentService = documentService;
+            _discountSettingsService = discountSettingsService;
         }
 
         public async Task<Request> GetRequestByIdAsync(int id)
@@ -159,47 +161,54 @@ namespace PropertyTax.Servise
                 //{ 
                 request.AverageMonthlyIncome = totalPaySlipsIncome / (numberPeople + 2);
 
-                double discountPercentage;
+                //double discountPercentage;
+                //// מדרגות הנחה
+                //if (request.AverageMonthlyIncome < 2000)
+                //    discountPercentage = 90;
+                //else if (request.AverageMonthlyIncome < 3000)
+                //    discountPercentage = 70;
+                //else if (request.AverageMonthlyIncome < 4000)
+                //    discountPercentage = 50;
+                //else if (request.AverageMonthlyIncome < 5000)
+                //    discountPercentage = 30;
+                //else if (request.AverageMonthlyIncome < 6000)
+                //    discountPercentage = 10;
+                //else
+                //    discountPercentage = 0;
 
-                // מדרגות הנחה
-                if (request.AverageMonthlyIncome < 2000)
-                    discountPercentage = 90;
-                else if (request.AverageMonthlyIncome < 3000)
-                    discountPercentage = 70;
-                else if (request.AverageMonthlyIncome < 4000)
-                    discountPercentage = 50;
-                else if (request.AverageMonthlyIncome < 5000)
-                    discountPercentage = 30;
-                else if (request.AverageMonthlyIncome < 6000)
-                    discountPercentage = 10;
-                else
-                    discountPercentage = 0;
+                //request.ApprovedArnona = discountPercentage;
 
-                request.ApprovedArnona = discountPercentage;
+                //PropertyBaseData p = await _propertyRepository.GetByPropertyNumberAsync(request.PropertyNumber);
+                //// התייחסות לרמה סוציו-אקונומית
+                //double priceForMeter = 20;
+                //int socioeconomicLevel = p.SocioEconomicLevel;
+                //if (socioeconomicLevel == 4)
+                //{
+                //    priceForMeter = 17.5;
+                //}
+                //if (socioeconomicLevel == 3)
+                //{
+                //    priceForMeter = 15.2;
+                //}
+                //if (socioeconomicLevel == 2)
+                //{
+                //    priceForMeter = 12.5;
+                //}
+                //if (socioeconomicLevel == 1)
+                //{
+                //    priceForMeter = 10;
+                //}
+                //request.CalculatedArnona = (p.AreaInSquareMeters) * priceForMeter *
+                //        (1 - (request.ApprovedArnona / 100));
+                //}
+                request.ApprovedArnona = await _discountSettingsService.CalculateDiscountPercentageAsync(request.AverageMonthlyIncome);
 
                 PropertyBaseData p = await _propertyRepository.GetByPropertyNumberAsync(request.PropertyNumber);
-                // התייחסות לרמה סוציו-אקונומית
-                double priceForMeter = 20;
-                int socioeconomicLevel = p.SocioEconomicLevel;
-                if (socioeconomicLevel == 4)
-                {
-                    priceForMeter = 17.5;
-                }
-                if (socioeconomicLevel == 3)
-                {
-                    priceForMeter = 15.2;
-                }
-                if (socioeconomicLevel == 2)
-                {
-                    priceForMeter = 12.5;
-                }
-                if (socioeconomicLevel == 1)
-                {
-                    priceForMeter = 10;
-                }
-                request.CalculatedArnona = (p.AreaInSquareMeters) * priceForMeter *
-                        (1 - (request.ApprovedArnona / 100));
-                //}
+
+                // שימוש בשירות החדש לקבלת מחיר למ"ר
+                double priceForMeter = await _discountSettingsService.GetPricePerSquareMeterAsync(p.SocioEconomicLevel);
+
+                request.CalculatedArnona = (p.AreaInSquareMeters) * priceForMeter * (1 - (request.ApprovedArnona / 100));
                 //else
                 //  {
                 //  request.AverageMonthlyIncome = 0;
