@@ -16,7 +16,7 @@ namespace PropertyTax.Core.Models
         public string Gmail { get; set; }
         public string HomeNumber { get; set; }
         public string Street { get; set; }
-        public string City { get; set; }
+        //public string City { get; set; }
         public int PropertyNumber { get; set; }
         public double AverageMonthlyIncome { get; set; }
         public List<Doc> Documents { get; set; }

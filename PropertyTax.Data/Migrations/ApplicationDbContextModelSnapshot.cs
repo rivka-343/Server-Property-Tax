@@ -115,10 +115,6 @@ namespace PropertyTax.Data.Migrations
                     b.Property<double>("CalculatedArnona")
                         .HasColumnType("double");
 
-                    b.Property<string>("City")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
                     b.Property<string>("FName")
                         .IsRequired()
                         .HasColumnType("longtext");
