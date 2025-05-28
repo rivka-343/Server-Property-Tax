@@ -12,6 +12,7 @@ using System.Text.Json;
 using System.Net.Http.Headers;
 using System.Text;
 using PropertyTax.Core.Repositories;
+using System.Linq.Expressions;
 
 namespace PropertyTax.Controllers {
     [ApiController]
@@ -70,11 +71,11 @@ namespace PropertyTax.Controllers {
                 DocumentType.PayslipSpouse1,
                 DocumentType.PayslipSpouse2
             };
-
-            if (requestCreateDto.DocumentUploads == null || requestCreateDto.DocumentUploads.Count != 4) {
-                return BadRequest("חובה לצרף 4 מסמכים.");
-            }
-
+            try {
+                if (requestCreateDto.DocumentUploads == null || requestCreateDto.DocumentUploads.Count != 4) {
+                    return BadRequest("חובה לצרף 4 מסמכים.");
+                }
+            
             var uploadedTypes = requestCreateDto.DocumentUploads.Select(d => d.Type).ToList();
 
             if (!requiredTypes.All(t => uploadedTypes.Contains(t))) {
@@ -83,6 +84,11 @@ namespace PropertyTax.Controllers {
 
             var requestId = await _requestService.CreateRequestWithDocumentsAsync(requestCreateDto, userId);
             return CreatedAtAction(nameof(GetRequest), new { id = requestId }, new { id = requestId });
+            }
+
+            catch (ArgumentException ex) {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpGet("{id}")]

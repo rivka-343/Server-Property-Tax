@@ -128,6 +128,14 @@ namespace PropertyTax.Servise
         //******
         public async Task<int> CreateRequestWithDocumentsAsync(RequestCreateDto requestCreateDto, int userId)
         {
+            var existingProperty = await _propertyRepository.GetByPropertyNumberAsync(requestCreateDto.PropertyNumber);
+           
+
+            if (existingProperty == null)
+            {
+                throw new ArgumentException("מספר הנכס לא קיים");
+            }
+
             var request = _mapper.Map<Request>(requestCreateDto);
             request.Status = "הבקשה נקלטה במערכת";
             request.UserId = userId;
@@ -164,6 +172,7 @@ namespace PropertyTax.Servise
 
                     request.ApprovedArnona = await _discountSettingsService.CalculateDiscountPercentageAsync(request.AverageMonthlyIncome);
 
+                   
                     PropertyBaseData p = await _propertyRepository.GetByPropertyNumberAsync(request.PropertyNumber);
 
                     // שימוש בשירות החדש לקבלת מחיר למ"ר

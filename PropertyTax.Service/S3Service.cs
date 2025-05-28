@@ -54,11 +54,6 @@ namespace PropertyTax.Servise
 
         public async Task<string> GetDownloadUrlAsync(string fileName)
         {
-            Console.WriteLine($"Bucket: {_bucketName}");
-            Console.WriteLine($"AccessKey is null:"+ Environment.GetEnvironmentVariable("AWS_ACCESS_KEY"));
-            Console.WriteLine($"SecretKey is null:" + Environment.GetEnvironmentVariable("AWS_SECRET_KEY"));
-            Console.WriteLine($"Region: "+Environment.GetEnvironmentVariable("AWS_REGION"));
-            Console.WriteLine(_s3Client);
             var request = new GetPreSignedUrlRequest
             {
                 BucketName = _bucketName,
